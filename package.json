@@ -5,7 +5,7 @@
   "license": "MIT",
   "main": "dist",
   "scripts": {
-    "dev": "nodemon -w src --exec \"babel src --presets es2015\"",
+    "dev": "nodemon -w src --exec \"./node_modules/.bin/babel-node src --presets es2015\"",
     "build": "./node_modules/.bin/babel src -s -D -d dist --presets es2015",
     "start": "node dist",
     "prestart": "npm run -s build",
