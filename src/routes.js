@@ -1,10 +1,12 @@
 import express from 'express';
 import fs from 'fs';
-import { appName, db } from './config';
 import sharp from 'sharp';
+import {
+  appName, db, myCache
+} from './config';
 
 const router = express.Router();
-const imageFolder = './images';
+const imageFolder = './images/';
 
 function getRandomImage() {
   return new Promise((resolve, reject) => {
@@ -12,14 +14,25 @@ function getRandomImage() {
       if (err) {
         reject(err)
       }
-      let image = files
+      let images = files
         .filter(file => {
           return !(/(^|\/)\.[^\/\.]/g).test(file)
-        })[Math.floor(Math.random() * files.length)];
-      resolve(image)
+        });
+      resolve(images[Math.floor(Math.random() * images.length)])
     })
   })
 }
+
+function cacheImageRequest(image, w, h, type) {
+  let key = `${w}x${h}-${type}`;
+  myCache.set(key, image, 0)
+}
+
+function convertDimensionsToInt(req, res, next) {
+  req.params.width = parseInt(req.params.width);
+  req.params.height = parseInt(req.params.height);
+  next();
+};
 
 router.get('/', (req, res) => {
 
@@ -30,46 +43,61 @@ router.get('/', (req, res) => {
 
 });
 
-router.get('/:width/:height', (req, res) => {
+router.get('/:width/:height', convertDimensionsToInt, (req, res, next) => {
   let { width, height } = req.params;
-  width = parseInt(width, 10);
-  height = parseInt(height, 10);
   if(isNaN(width) || isNaN(height)) {
     res.send(404);
   }
 
-  getRandomImage().then(image => {
-    sharp('./images/' + image)
+  let cachedImg = myCache.get(`${width}x${height}-c`);
+
+  if(cachedImg) {
+    res.set('Content-Type', 'image/png');
+    res.send(cachedImg);
+  } else {
+    getRandomImage().then(image => {
+      sharp(imageFolder + image)
       .resize(width, height)
       .png()
       .toBuffer()
       .then(img => {
+        cacheImageRequest(img, width, height, 'c');
         res.set('Content-Type', 'image/png');
         res.send(img);
       })
-  }).catch(err => console.error(err));
+    }).catch(err => console.error(err));
+  }
+
 
 })
 
-router.get('/g/:width/:height', (req, res) => {
+router.get('/g/:width/:height', convertDimensionsToInt, (req, res) => {
   let { width, height } = req.params;
-  width = parseInt(width, 10);
-  height = parseInt(height, 10);
   if(isNaN(width) || isNaN(height)) {
     res.send(404);
   }
 
-  getRandomImage().then(image => {
-    sharp('./images/' + image)
+  let cachedImg = myCache.get(`${width}x${height}-g`);
+
+
+  if(cachedImg) {
+    res.set('Content-Type', 'image/png');
+    res.send(cachedImg);
+  } else {
+    getRandomImage().then(image => {
+      sharp(imageFolder + image)
       .resize(width, height)
       .greyscale()
       .png()
       .toBuffer()
       .then(img => {
+        cacheImageRequest(img, width, height, 'g');
         res.set('Content-Type', 'image/png');
         res.send(img);
       })
-  }).catch(err => console.error(err));
+    }).catch(err => console.error(err));
+  }
+
 })
 
 export default router;
