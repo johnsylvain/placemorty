@@ -17,4 +17,5 @@ yarn start
 
 ## Todo
 
-- [ ] Image caching
+- [x] Image caching
+- [ ] host on digitalocean
