@@ -1,4 +1,13 @@
 extends layout
 
 block content
-  h1= url
+  .container
+    #info
+      h1= title
+      img(src=url+'1400/660')
+      p Use your own image size (width &amp; height) to get a Morty placeholder image. 
+      #code
+        span: a(href=url+"300/200") #{url}300/200
+        span: a(href=url+"g/300/200") #{url}g/300/200
+    footer
+      p Created by <a href="http://johnsylvain.me">John Sylvain</a>
