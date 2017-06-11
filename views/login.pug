@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  .container.small
+    h1 Admin Login
+    form(action="/login", method="post", id="login-form")
+      input(type="text", name="username", placeholder="Username")
+      input(type="password", name="password", placeholder="Password")
+      button(type="submit") Login
+      
+    //- form(action="/signup", method="post")
+    //-   input(type="text", name="username")
+    //-   input(type="password", name="password")
+    //-   button(type="submit") signup

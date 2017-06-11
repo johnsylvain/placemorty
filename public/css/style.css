@@ -54,6 +54,10 @@ body {
   max-width: 700px;
   margin: 0 auto;
 }
+.container.small {
+	max-width: 300px;
+	text-align: center;
+}
 
 #code {
   font-family: 'Ubuntu Mono', monospace;
@@ -74,7 +78,7 @@ body {
   color:#333;
 }
 
-#info h1 {
+h1 {
   font-weight: bold;
   font-size: 2em;
   margin-bottom: 0.5em;
@@ -105,4 +109,39 @@ footer a {
 }
 footer a:hover {
   text-decoration: underline;
+}
+
+
+#login-form {
+	display: block;
+	margin: 0 auto;
+	width: 100%;
+	max-width: 300px;
+}
+#login-form input, #login-form button {
+	width: 100%;
+	outline: none;
+	border: none;
+	background-color: #eeeeee;
+	padding: 0.7em 1em;
+	margin-bottom: 0.5em;
+	border-radius: 0.2em;
+	font-size: 1em;
+	opacity: 0.8;
+	font-family: 'Overpass', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+#login-form input:focus {
+	opacity: 1;
+}
+#login-form button {
+	background-color: #3498db;
+	opacity: 0.5;
+	font-size: 0.8em;
+	color: white;
+	font-weight: bold;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+#login-form button:hover {
+	opacity: 0.7
 }
