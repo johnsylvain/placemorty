@@ -1,4 +1,5 @@
 import multer from 'multer';
+import multerS3 from 'multer-s3';
 import fs from 'fs';
 import crypto from 'crypto';
 import mime from 'mime';
@@ -10,25 +11,57 @@ import {
   getRandomImage, cacheImageRequest, convertDimensionsToInt, resizeImage
 } from './utils/helpers';
 
-let upload = multer({ dest: 'images/' });
 
-export default function routes(app, passport) {
+export default function routes(app, passport, s3) {
+
+  let upload = multer({
+    storage: multerS3({
+      s3,
+      bucket: 'placemorty',
+      acl: 'public-read',
+      metadata(req, file, cb) {
+        cb(null, Object.assign({}, req.body))
+      },
+      key(req, file, cb) {
+        cb(null, Date.now().toString())
+      }
+    })
+  })
 
   //========================
   // Begin Image Upload
   app.post('/upload', isLoggedIn, upload.single('file'), (req, res, next) => {
       let newImage = new Image();
+      newImage.meta = req.file;
 
-      newImage.fileName = req.file.filename;
       newImage.save(err => {
         if (err) console.error(err);
+        Image.findOne({ 'meta.key': newImage.meta.key }, (err, obj) => {
+          if (err) console.error(err);
+          let params = {
+            Bucket: obj.meta.bucket,
+            Key: obj.meta.key
+          }
+          s3.getObject(params, (err, d) => {
+            let data = JSON.parse(JSON.stringify(d.Body, null, ' ')).data
+
+            obj.data = new Buffer(data);
+            obj.save(error => console.error(error))
+          })
+        })
       })
+
 
       res.redirect('/dashboard');
   })
-  app.get('/delete/:fileId', isLoggedIn, (req, res) => {
-    Image.find({ fileName: req.params.fileId }).remove(function() {
-      fs.unlink(imageFolder + req.params.fileId, () => {
+  app.get('/delete/:key', isLoggedIn, (req, res) => {
+    Image.findOneAndRemove({ 'meta.key': req.params.key }, function(err, obj) {
+      let params = {
+        Bucket: obj.meta.bucket,
+        Key: obj.meta.key
+      }
+      s3.deleteObject(params, (error, data) => {
+        if (error) return console.error(error);
         myCache.flushAll();
         res.redirect('/dashboard');
       })
@@ -61,7 +94,7 @@ export default function routes(app, passport) {
       res.send(cachedImg);
     } else {
       Image.random((err, image) => {
-        resizeImage(image.fileName, width, height, type).then(img => {
+        resizeImage(image.data, width, height, type).then(img => {
           res.set('Content-Type', 'image/png');
           res.send(img);
         }).catch(err => console.error(err))

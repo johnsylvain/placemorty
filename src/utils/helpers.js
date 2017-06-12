@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+import request from 'request';
 import fs from 'fs';
 import { imageFolder, myCache } from '../config/config';
 
@@ -32,17 +33,17 @@ export function convertDimensionsToInt(req, res, next) {
   next();
 };
 
-export function resizeImage(i, w, h, type) {
+export function resizeImage(imgData, w, h, type) {
   return new Promise((resolve, reject) => {
-    return sharp(imageFolder + i)
+    return sharp(imgData)
       .resize(w, h)
       .toColourspace(type)
       .png()
       .toBuffer()
       .then(img => {
         cacheImageRequest(img, w, h, type);
-        resolve(img)
+        return resolve(img)
       })
       .catch(err => reject(err))
-  })
+    })
 }

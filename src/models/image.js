@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 
 let imageSchema = mongoose.Schema({
-  fileName: String
+  meta: Object,
+  data: Buffer
 });
 
 imageSchema.statics.random = function(callback) {

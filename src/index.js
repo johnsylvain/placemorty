@@ -8,6 +8,7 @@ import session from 'express-session';
 
 import configDB from './config/database';
 import configPassport from './config/passport';
+import s3 from './config/aws';
 import { port } from './config/config';
 
 require('dotenv').config();
@@ -32,7 +33,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 import routes from './routes';
-routes(app, passport)
+routes(app, passport, s3)
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)

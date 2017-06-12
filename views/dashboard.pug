@@ -15,9 +15,9 @@ block content
         for img in images
           .col-1-2 
             .image
-              .thumbnail(style="background-image: url(" + img.fileName + ")")
+              .thumbnail(style="background-image: url(" + img.meta.location + ")")
               .image_data
-                p <strong>File Name:</strong> #{img.fileName}
+                p <strong>File Name:</strong> #{img.meta.originalname}
                 p <strong>Actions: </strong>
-                  a(href="/delete/"+img.fileName) Delete
+                  a(href="/delete/"+img.meta.key) Delete
            
