@@ -3,3 +3,20 @@ extends layout
 block content
   .container
     h1 Hello, #{user.local.username}
+      a.btn(href="/logout") Logout
+      
+    form(action="/upload", method="post", enctype="multipart/form-data")
+      input(type="file", name="fileupl")
+      button(type="submit") upload
+      
+    .grid
+      #images
+        for img in images
+          .col-1-2 
+            .image
+              .thumbnail(style="background-image: url(" + img.fileName + ")")
+              .image_data
+                p <strong>File Name:</strong> #{img.fileName}
+                p <strong>Actions: </strong>
+                  a(href="/delete/"+img.fileName) Delete
+           

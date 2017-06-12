@@ -84,6 +84,10 @@ h1 {
   margin-bottom: 0.5em;
   color: #555;
 }
+h1 a {
+	float: right;
+	font-size: 0.4em !important;
+}
 
 #info img {
   border-radius: 0.15em;
@@ -145,3 +149,64 @@ footer a:hover {
 #login-form button:hover {
 	opacity: 0.7
 }
+.btn {
+	background-color: #3498db;
+	opacity: 0.5;
+	font-size: 0.8em;
+	color: white;
+	font-weight: bold;
+	text-transform: uppercase;
+	cursor: pointer;
+	outline: none;
+	border: none;
+	padding: 0.7em 1em;
+	border-radius: 0.2em;
+	font-size: 0.8em;
+	text-decoration: none;
+}
+
+
+.grid {
+  background: white;
+  margin: 0 0 1em 0;
+}
+.grid:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+[class*='col-'] {
+  float: left;
+}
+[class*='col-']:nth-child(2n) {
+	padding-left: 0.5em;
+}
+[class*='col-']:nth-child(2n - 1) {
+	padding-right: 0.5em;
+}
+.col-1-2 {
+  width: 50%;
+}
+
+
+#images .image {
+	position: static;
+	width: 100%;
+	background-color: #eeeeee;
+	border-radius: 0.1em;
+	overflow: hidden;
+	margin-top: 1em;
+}
+#images .image .thumbnail {
+	width: 100%;
+	height: 200px;
+	background-size: cover;
+	background-position: center;
+}
+#images .image .image_data {
+	padding: 1em;
+	font-size: 0.7em;
+	line-height: 150%;
+}
+#images .image .image_data p { overflow: scroll; }

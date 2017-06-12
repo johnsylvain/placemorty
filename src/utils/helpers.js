@@ -1,6 +1,6 @@
 import sharp from 'sharp';
 import fs from 'fs';
-import { imageFolder, myCache } from './config';
+import { imageFolder, myCache } from '../config/config';
 
 export function getRandomImage() {
   return new Promise((resolve, reject) => {

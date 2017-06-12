@@ -8,7 +8,9 @@ import session from 'express-session';
 
 import configDB from './config/database';
 import configPassport from './config/passport';
-import { port } from './utils/config';
+import { port } from './config/config';
+
+require('dotenv').config();
 
 mongoose.connect(configDB.url)
 configPassport(passport);

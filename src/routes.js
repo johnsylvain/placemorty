@@ -1,18 +1,61 @@
+import multer from 'multer';
+import fs from 'fs';
+import crypto from 'crypto';
+import mime from 'mime';
+import Image from './models/image';
 import {
-  appName, myCache
-} from './utils/config';
+  appName, myCache, imageFolder
+} from './config/config';
 import {
   getRandomImage, cacheImageRequest, convertDimensionsToInt, resizeImage
 } from './utils/helpers';
 
-export default function routes(app, passport) {
-  app.get('/', (req, res) => {
+let upload = multer({ dest: 'images/' });
+// var storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, './images/')
+//   },
+//   filename: function (req, file, cb) {
+//     crypto.pseudoRandomBytes(16, function (err, raw) {
+//       cb(null, raw.toString('hex') + Date.now() + '.' + mime.extension(file.mimetype));
+//     });
+//   }
+// });
+// let upload = multer({ storage });
 
+export default function routes(app, passport) {
+
+  //========================
+  // Begin Image Upload
+  app.post('/upload', isLoggedIn, upload.single('fileupl'), (req, res, next) => {
+      let newImage = new Image();
+
+      newImage.fileName = req.file.filename;
+      newImage.save(err => {
+        if (err) console.error(err);
+      })
+
+      res.redirect('/dashboard');
+  })
+  app.get('/delete/:fileId', isLoggedIn, (req, res) => {
+    Image.find({ fileName: req.params.fileId }).remove(function() {
+      fs.unlink(imageFolder + req.params.fileId, () => {
+        myCache.flushAll();
+        res.redirect('/dashboard');
+      })
+    })
+  })
+  // End Image Upload
+  //========================
+
+  //========================
+  // Begin Main Routes
+  app.get('/', (req, res) => {
     res.render('index', {
       url: req.protocol + '://' + req.get('host') + req.originalUrl,
-      title: appName
+      title: appName,
+      footer: true
     })
-
   });
 
   app.get('/:t?/:width/:height', convertDimensionsToInt, (req, res) => {
@@ -28,17 +71,25 @@ export default function routes(app, passport) {
       res.set('Content-Type', 'image/png');
       res.send(cachedImg);
     } else {
-      getRandomImage().then(image => {
-        resizeImage(image, width, height, type).then(img => {
+      Image.random((err, image) => {
+        resizeImage(image.fileName, width, height, type).then(img => {
           res.set('Content-Type', 'image/png');
           res.send(img);
         }).catch(err => console.error(err))
-      }).catch(err => console.error(err));
+      })
     }
   });
+  // End Main Routes
+  //========================
 
+
+  //========================
+  // Begin Authentication
   app.get('/login', (req, res) => {
-    res.render('login', {title: `Login - ${appName}`})
+    res.render('login', {
+      title: `Login - ${appName}`,
+      footer: false
+    })
   });
 
   app.post('/login', passport.authenticate('local-login', {
@@ -56,16 +107,23 @@ export default function routes(app, passport) {
   }))
 
   app.get('/dashboard', isLoggedIn, (req, res) => {
-    res.render('dashboard', {
-      user: req.user,
-      title: `Dashboard - ${appName}`
-    });
+    Image.find({}, (err, images) => {
+      res.render('dashboard', {
+        user: req.user,
+        title: `Dashboard - ${appName}`,
+        footer: true,
+        images
+      });
+    })
   });
 
   app.get('/logout', (req, res) => {
     req.logout();
     res.redirect('/');
-  })
+  });
+  // End Authentication
+  //========================
+
 
 }
 
