@@ -1,5 +1,4 @@
 import sharp from 'sharp';
-import request from 'request';
 import fs from 'fs';
 import { imageFolder, myCache } from '../config/config';
 
