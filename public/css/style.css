@@ -88,6 +88,10 @@ h1 a {
 	float: right;
 	font-size: 0.4em !important;
 }
+h2 {
+	font-size: 1.2em;
+	margin-bottom: 0.5em;
+}
 
 #info img {
   border-radius: 0.15em;

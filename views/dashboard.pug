@@ -4,9 +4,10 @@ block content
   .container
     h1 Hello, #{user.local.username}
       a.btn(href="/logout") Logout
-      
-    form(action="/upload", method="post", enctype="multipart/form-data")
-      input(type="file", name="fileupl")
+    br
+    h2 Image Gallery (#{images.length})
+    form(action="/upload", method="post", enctype="multipart/form-data", id="imageupl")
+      input(type="file", name="file", class="inputfile")
       button(type="submit") upload
       
     .grid

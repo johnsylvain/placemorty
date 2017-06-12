@@ -11,23 +11,12 @@ import {
 } from './utils/helpers';
 
 let upload = multer({ dest: 'images/' });
-// var storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, './images/')
-//   },
-//   filename: function (req, file, cb) {
-//     crypto.pseudoRandomBytes(16, function (err, raw) {
-//       cb(null, raw.toString('hex') + Date.now() + '.' + mime.extension(file.mimetype));
-//     });
-//   }
-// });
-// let upload = multer({ storage });
 
 export default function routes(app, passport) {
 
   //========================
   // Begin Image Upload
-  app.post('/upload', isLoggedIn, upload.single('fileupl'), (req, res, next) => {
+  app.post('/upload', isLoggedIn, upload.single('file'), (req, res, next) => {
       let newImage = new Image();
 
       newImage.fileName = req.file.filename;
@@ -97,14 +86,14 @@ export default function routes(app, passport) {
     failureRedirect: '/login'
   }));
 
-  app.get('/signup', (req, res) => {
-    res.render('login', {title: `Login - ${appName}`})
-  });
-
-  app.post('/signup', passport.authenticate('local-signup', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/signup'
-  }))
+  // app.get('/signup', (req, res) => {
+  //   res.render('login', {title: `Login - ${appName}`})
+  // });
+  //
+  // app.post('/signup', passport.authenticate('local-signup', {
+  //   successRedirect: '/dashboard',
+  //   failureRedirect: '/signup'
+  // }))
 
   app.get('/dashboard', isLoggedIn, (req, res) => {
     Image.find({}, (err, images) => {
