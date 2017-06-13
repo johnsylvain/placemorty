@@ -1,8 +1,6 @@
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import fs from 'fs';
-import crypto from 'crypto';
-import mime from 'mime';
 import Image from './models/image';
 import {
   appName, myCache, imageFolder
