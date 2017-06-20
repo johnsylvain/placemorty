@@ -10,7 +10,7 @@ import {
 } from './utils/helpers';
 
 
-export default function routes(app, passport, s3) {
+export default function routes(app, passport, s3, client) {
 
   let upload = multer({
     storage: multerS3({
@@ -85,19 +85,21 @@ export default function routes(app, passport, s3) {
     if(t == 'g') type = 'b-w';
     else type = 'srgb';
 
-    let cachedImg = myCache.get(`${width}x${height}_${type}`);
+    client.get(`${width}x${height}_${type}`, (error, cachedImg) => {
+      if(cachedImg) {
+        res.set('Content-Type', 'image/png');
+        res.send(cachedImg);
+      } else {
+        Image.random((err, image) => {
+          resizeImage(image.data, width, height, type).then(img => {
+            client.setex(`${width}x${height}_${type}`, 5 * 60, img);
+            res.set('Content-Type', 'image/png');
+            res.send(img);
+          }).catch(err => console.error(err))
+        })
+      }
+    })
 
-    if(cachedImg) {
-      res.set('Content-Type', 'image/png');
-      res.send(cachedImg);
-    } else {
-      Image.random((err, image) => {
-        resizeImage(image.data, width, height, type).then(img => {
-          res.set('Content-Type', 'image/png');
-          res.send(img);
-        }).catch(err => console.error(err))
-      })
-    }
   });
   // End Main Routes
   //========================

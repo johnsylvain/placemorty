@@ -1,6 +1,5 @@
-import NodeCache from 'node-cache';
+import redis from 'redis'
 
-export const myCache = new NodeCache();
 export const port = process.env.PORT || 1337;
 export const appName = 'PlaceMorty';
-export const imageFolder = './images/';
+export const client = redis.createClient({ return_buffers: true });

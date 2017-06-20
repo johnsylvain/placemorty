@@ -5,11 +5,13 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import compression from 'compression';
+import responseTime from 'response-time';
 
 import configDB from './config/database';
 import configPassport from './config/passport';
 import s3 from './config/aws';
-import { port } from './config/config';
+import { port, client } from './config/config';
 
 require('dotenv').config();
 
@@ -17,9 +19,11 @@ mongoose.connect(configDB.url)
 configPassport(passport);
 const app = express();
 
+app.use(compression());
+app.use(responseTime());
 app.use(morgan('dev'));
-app.use(cookieParser())
-app.use(bodyParser.json())
+app.use(cookieParser());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -33,7 +37,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 import routes from './routes';
-routes(app, passport, s3)
+routes(app, passport, s3, client)
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)

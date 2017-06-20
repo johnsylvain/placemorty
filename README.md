@@ -8,12 +8,24 @@ __Base URL:__ http://www.placemorty.us
 * Greyscale
   * `http://www.placemorty.us/g/{width}/{height}`
 
+### Example (html)
 ```html
 <img src="http://www.placemorty.us/300/200" />
 <img src="http://www.placemorty.us/g/500/200" />
 ```
 
 ## Installation
+
+### Redis
+```bash
+# install redis
+brew update && brew install redis
+
+# run redis
+redis-server
+```
+
+### Application
 ```bash
 # Install dependencies
 yarn
@@ -37,7 +49,7 @@ Create a user:
 - uncomment signup form in `views/login.pug`
 
 ## Todo
-- [x] Image caching
+- [x] Redis image caching
 - [x] Store images in s3 bucket
 - [x] Authentication for admin panel
 - [ ] host on digitalocean

@@ -1,6 +1,5 @@
 import sharp from 'sharp';
 import fs from 'fs';
-import { imageFolder, myCache } from '../config/config';
 
 export function getRandomImage() {
   return new Promise((resolve, reject) => {
@@ -15,11 +14,6 @@ export function getRandomImage() {
       resolve(images[Math.floor(Math.random() * images.length)])
     })
   })
-}
-
-export function cacheImageRequest(image, w, h, t) {
-  let key = `${w}x${h}_${t}`;
-  myCache.set(key, image, 0)
 }
 
 export function convertDimensionsToInt(req, res, next) {
@@ -40,7 +34,6 @@ export function resizeImage(imgData, w, h, type) {
       .png()
       .toBuffer()
       .then(img => {
-        cacheImageRequest(img, w, h, type);
         return resolve(img)
       })
       .catch(err => reject(err))
