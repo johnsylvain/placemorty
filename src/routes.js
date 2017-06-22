@@ -92,7 +92,8 @@ export default function routes(app, passport, s3, client) {
       } else {
         Image.random((err, image) => {
           resizeImage(image.data, width, height, type).then(img => {
-            client.setex(`${width}x${height}_${type}`, 5 * 60, img);
+            var expTime = 1 * 60 * 60; // expire cached image after 1 hour
+            client.setex(`${width}x${height}_${type}`, expTime, img);
             res.set('Content-Type', 'image/png');
             res.send(img);
           }).catch(err => console.error(err))
