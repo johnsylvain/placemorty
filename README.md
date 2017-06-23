@@ -2,16 +2,16 @@
 A simple service for getting pictures of Morty for use as placeholders in your designs or code.
 
 ## Usage
-__Base URL:__ http://www.placemorty.us
+__Base URL:__ https://placemorty.us
 * Color
-  * `http://www.placemorty.us/{width}/{height}`
+  * `https://placemorty.us/{width}/{height}`
 * Greyscale
-  * `http://www.placemorty.us/g/{width}/{height}`
+  * `https://placemorty.us/g/{width}/{height}`
 
 ### Example (html)
 ```html
-<img src="http://www.placemorty.us/300/200" />
-<img src="http://www.placemorty.us/g/500/200" />
+<img src="https://placemorty.us/300/200" />
+<img src="https://placemorty.us/g/500/200" />
 ```
 
 ## Installation
@@ -52,4 +52,4 @@ Create a user:
 - [x] Redis image caching
 - [x] Store images in s3 bucket
 - [x] Authentication for admin panel
-- [ ] host on digitalocean
+- [x] host on digitalocean
