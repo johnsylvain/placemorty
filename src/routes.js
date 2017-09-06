@@ -2,6 +2,7 @@ import multer from 'multer';
 import multerS3 from 'multer-s3';
 import fs from 'fs';
 import Image from './models/image';
+import Analytic from './models/analytic';
 import {
   appName, myCache, imageFolder
 } from './config/config';
@@ -84,6 +85,14 @@ export default function routes(app, passport, s3, client) {
 
     if(t == 'g') type = 'b-w';
     else type = 'srgb';
+
+    Analytic.findOneOrCreate(
+      {dimensions: `${width}_${height}_${type}`}, 
+      {dimensions: `${width}_${height}_${type}`}, 
+      (err, doc) => {
+        Analytic.findOneAndUpdate({_id: doc._id}, {$inc: {hits : 1}}).exec();
+      }
+    );
 
     client.get(`${width}x${height}_${type}`, (error, cachedImg) => {
       if(cachedImg) {
