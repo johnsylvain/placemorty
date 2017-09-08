@@ -5,6 +5,8 @@ block content
     h1 Hello, #{user.local.username}
       a.btn(href="/logout") Logout
     br
+    h2 Usage
+    canvas(id="myChart", width="400", height="400")
     h2 Image Gallery (#{images.length})
     form(action="/upload", method="post", enctype="multipart/form-data", id="imageupl")
       input(type="file", name="file", class="inputfile")

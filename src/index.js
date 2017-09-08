@@ -36,8 +36,9 @@ app.use(session({secret: 'wubbalubbadubdub'}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-import routes from './routes';
-routes(app, passport, s3, client)
+// init routes
+require('./api').default(app);
+require('./routes').default(app, passport, s3, client);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
