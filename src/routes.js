@@ -87,12 +87,18 @@ export default function routes(app, passport, s3, client) {
     else type = 'srgb';
 
     Analytic.findOneOrCreate(
-      {dimensions: `${width}_${height}_${type}`}, 
-      {dimensions: `${width}_${height}_${type}`}, 
+      {dimensions: `${width}_${height}_${type}`},
+      {dimensions: `${width}_${height}_${type}`, created_at: Date.now()},
       (err, doc) => {
         Analytic.findOneAndUpdate({_id: doc._id}, {$inc: {hits : 1}}).exec();
       }
     );
+    // Analytic.find({dimensions: `${width}_${height}_${type}`}, (err, doc) => {
+    //   console.log(doc);
+    //   if (!doc) {
+    //     Analytic.create()
+    //   }
+    // })
 
     client.get(`${width}x${height}_${type}`, (error, cachedImg) => {
       if(cachedImg) {
