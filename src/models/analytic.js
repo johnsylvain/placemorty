@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
 let analyticSchema = new mongoose.Schema({
-  dimensions: String, // ex: '200_300_g'
   hits: { type: Number, default: 0 },
   created_at: Date
 });

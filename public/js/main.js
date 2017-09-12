@@ -20,17 +20,20 @@ App.prototype.fetchData = function (url) {
 App.prototype.drawChart = function () {
   this.fetchData('/api/usage')
     .then(res => {
-      var labels = Object.keys(res);
-      var hits = Object.keys(res).map(item => res[item]);
+      var labels = res.map(item => item.created_at);
+      var hits = res.map(item => item.hits);
 
       var myChart = new Chart(this.ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
           labels: labels,
           datasets: [{
+            lineTension: 0.5,
+            borderColor: '#3498db',
             label: '# of hits',
             data: hits,
-            borderWidth: 1
+            borderWidth: 2,
+            backgroundColor: 'transparent'
           }]
         },
         options: {

@@ -1,6 +1,7 @@
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import fs from 'fs';
+import moment from 'moment';
 import Image from './models/image';
 import Analytic from './models/analytic';
 import {
@@ -87,18 +88,12 @@ export default function routes(app, passport, s3, client) {
     else type = 'srgb';
 
     Analytic.findOneOrCreate(
-      {dimensions: `${width}_${height}_${type}`},
-      {dimensions: `${width}_${height}_${type}`, created_at: Date.now()},
+      {created_at: moment(Date.now()).format('MM-DD-YYYY')},
+      {created_at: moment(Date.now()).format('MM-DD-YYYY')},
       (err, doc) => {
         Analytic.findOneAndUpdate({_id: doc._id}, {$inc: {hits : 1}}).exec();
       }
     );
-    // Analytic.find({dimensions: `${width}_${height}_${type}`}, (err, doc) => {
-    //   console.log(doc);
-    //   if (!doc) {
-    //     Analytic.create()
-    //   }
-    // })
 
     client.get(`${width}x${height}_${type}`, (error, cachedImg) => {
       if(cachedImg) {
