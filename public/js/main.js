@@ -20,8 +20,10 @@ App.prototype.fetchData = function (url) {
 App.prototype.drawChart = function () {
   this.fetchData('/api/usage')
     .then(res => {
-      var labels = res.map(item => item.created_at);
-      var hits = res.map(item => item.hits);
+      var labels = res.map(item =>
+        new Date(item.created_at).toString().split(' ').slice(0, 4).join(' ')
+      ).reverse();
+      var hits = res.map(item => item.hits).reverse();
 
       var myChart = new Chart(this.ctx, {
         type: 'line',

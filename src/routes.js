@@ -88,8 +88,8 @@ export default function routes(app, passport, s3, client) {
     else type = 'srgb';
 
     Analytic.findOneOrCreate(
-      {created_at: moment(Date.now()).format('MM-DD-YYYY')},
-      {created_at: moment(Date.now()).format('MM-DD-YYYY')},
+      {created_at: moment(Date.now()).endOf('day')},
+      {created_at: moment(Date.now()).endOf('day')},
       (err, doc) => {
         Analytic.findOneAndUpdate({_id: doc._id}, {$inc: {hits : 1}}).exec();
       }
