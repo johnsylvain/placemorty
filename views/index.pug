@@ -7,5 +7,10 @@ block content
       img(src='splash.png')
       p Use your own image size (width &amp; height) to get a Morty placeholder image. 
       #code
+        span.comment // example urls
         span: a(href=url+"300/200") #{url}300/200
         span: a(href=url+"g/300/200") #{url}g/300/200
+        br
+        span.comment // example html
+        span &lt;img src="#{url}g/300/200" /&gt;
+        

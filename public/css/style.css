@@ -70,12 +70,16 @@ body {
   display: block;
   padding: 0.4em;
 }
-#code span a {
+#code span, #code span a {
   color:#555;
   text-decoration: none;
 }
 #code span a:hover {
   color:#333;
+}
+#code span.comment {
+	color: #aaa;
+	font-style: italic;
 }
 
 h1 {
