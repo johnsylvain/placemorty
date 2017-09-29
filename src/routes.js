@@ -119,6 +119,9 @@ export default function routes(app, passport, s3, client) {
   //========================
   // Begin Authentication
   app.get('/login', (req, res) => {
+    if(req.isAuthenticated())
+      return res.redirect('/dashboard');
+
     res.render('login', {
       title: `Login - ${appName}`,
       footer: false
